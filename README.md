@@ -9,11 +9,13 @@ Instalacion
 
 Armar el entorno:
 
+> apt-get install python-skimage
+
+> apt-get install python-sklearn
+
 > mkvirtualenv recon
 
 > workon recon
-
-> pip install scikit-image==0.8
 
 > pip install numpy
 
