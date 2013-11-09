@@ -35,9 +35,9 @@
        xlink:href="#linearGradient4639"
        id="linearGradient4645"
        x1="56.642857"
-       y1="608.57144"
-       x2="986.21427"
-       y2="608.57144"
+       y1="608.57141"
+       x2="986.21429"
+       y2="608.57141"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -47,9 +47,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="802.96466"
-     inkscape:cy="2525.9221"
+     inkscape:zoom="0.39500891"
+     inkscape:cx="1331.1613"
+     inkscape:cy="1264.2625"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -86,159 +86,29 @@
        height="2805"
        width="1709" />
     <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.96801639px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="opacity:0.5;fill:#000080;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="totales"
-       width="917.1748"
-       height="237.17484"
-       x="25.484009"
-       y="-342.29663"
-       inkscape:label="tabla">
+       width="925.48346"
+       height="243.45406"
+       x="59.07341"
+       y="486.81616"
+       inkscape:label="tabla"
+       transform="translate(-37.357143,-832.99493)">
       <title
-         id="title3869"
-         style="fill:url(#linearGradient4645);fill-opacity:1">Totales</title>
+         id="title3054">totales</title>
     </rect>
     <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="total_votantes"
-       width="152.85718"
-       height="74.285706"
-       x="788.35718"
-       y="-343.70923"
-       inkscape:label="celda">
-      <title
-         id="title4683">Total de votantes</title>
-    </rect>
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="total_sobres"
-       width="154.28574"
-       height="74.999992"
-       x="786.92853"
-       y="-262.63779"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="total_impugnados"
-       width="154.28574"
-       height="74.999992"
-       x="787.64282"
-       y="-181.92349"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="identificadores"
-       width="579.28571"
-       height="231.42857"
-       x="1013.3571"
-       y="-342.99493"
-       ry="0"
-       inkscape:label="tabla" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
+       style="opacity:0.5;fill:#000080;fill-opacity:1"
        id="votos"
        width="1561.4286"
        height="1072.5"
        x="64.285713"
        y="845.35712"
        transform="translate(-37.357143,-832.99493)"
-       inkscape:label="tabla" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_0"
-       width="256.42856"
-       height="75"
-       x="1368.5714"
-       y="954.28571"
-       transform="translate(-37.357143,-832.99493)"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_1"
-       width="256.42856"
-       height="75"
-       x="1331.5714"
-       y="200.93364"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_1"
-       width="256.42856"
-       height="75"
-       x="1330.8572"
-       y="525.21936"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_2"
-       width="256.42856"
-       height="75"
-       x="1331.5715"
-       y="283.79077"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_3"
-       width="256.42856"
-       height="75"
-       x="1330.8572"
-       y="364.50507"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_4"
-       width="256.42856"
-       height="75"
-       x="1331.5715"
-       y="444.50507"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_5"
-       width="256.42856"
-       height="75"
-       x="1332.2856"
-       y="766.64789"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="votos_nulos"
-       width="256.42856"
-       height="75"
-       x="1330.8571"
-       y="928.07648"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="votos_blanco"
-       width="256.42856"
-       height="75"
-       x="1332.2856"
-       y="848.07648"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_8"
-       width="256.42856"
-       height="75"
-       x="1330.8571"
-       y="605.93359"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="voto_9"
-       width="256.42856"
-       height="75"
-       x="1330.1429"
-       y="685.93359"
-       inkscape:label="celda" />
-    <rect
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
-       id="votos_recurridos"
-       width="256.42856"
-       height="75"
-       x="1330.1428"
-       y="1008.7908"
-       inkscape:label="celda" />
+       inkscape:label="tabla">
+      <title
+         id="title3071">votos_por_agrupacion</title>
+    </rect>
     <rect
        style="opacity:0.33300003;fill:#0000fe;fill-opacity:1"
        id="info_cobro_fiscales"
@@ -258,15 +128,204 @@
        transform="translate(-37.357143,-832.99493)"
        inkscape:label="tabla" />
     <rect
-       inkscape:label="referencia"
-       y="-634.50006"
-       x="594.89807"
-       height="48.837547"
-       width="412.86377"
-       id="rect3009"
-       style="opacity:0.33300003;fill:#0000fe;fill-opacity:1">
+       style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="referencia"
+       width="413.79483"
+       height="53.445263"
+       x="630.92688"
+       y="196.80717"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="referencia" />
+    <rect
+       style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="cabecera"
+       width="532.85712"
+       height="172.85713"
+       x="1061.2142"
+       y="-606.56635"
+       inkscape:label="tabla" />
+    <rect
+       style="opacity:0.5;fill:#000080;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="identificadores"
+       width="587.15393"
+       height="238.08374"
+       x="1045.4204"
+       y="485.02603"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="tabla">
       <title
-         id="title3011">TELEGRAMA</title>
+         id="title3069">info_mesa</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="total_votos"
+       width="156.18652"
+       height="76.526917"
+       x="824.7901"
+       y="489.05377"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="celda" />
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="total_sobres"
+       width="153.50136"
+       height="74.736816"
+       x="825.23767"
+       y="570.50348"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="celda" />
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="total_inpugnados"
+       width="154.39642"
+       height="75.631866"
+       x="825.23767"
+       y="651.50562"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="celda" />
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_0"
+       width="258.85492"
+       height="74.048965"
+       x="1368.3236"
+       y="953.77594"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="celda">
+      <title
+         id="title3044">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_1"
+       width="258.22202"
+       height="74.048965"
+       x="1367.6907"
+       y="1035.4197"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3046">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_2"
+       width="256.32333"
+       height="75.947655"
+       x="1368.9564"
+       y="1115.7976"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3048">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_3"
+       width="258.22202"
+       height="75.314758"
+       x="1368.9564"
+       y="1196.8085"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3050">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_4"
+       width="257.58911"
+       height="72.783165"
+       x="1368.9564"
+       y="1278.4521"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3052">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_5"
+       width="260.12073"
+       height="75.314758"
+       x="1368.3236"
+       y="1357.5643"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3055">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_6"
+       width="257.58911"
+       height="74.681862"
+       x="1368.9564"
+       y="1439.208"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3057">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_7"
+       width="258.85492"
+       height="75.947655"
+       x="1367.6907"
+       y="1519.5859"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3059">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voyo_8"
+       width="256.95624"
+       height="75.947655"
+       x="1367.6907"
+       y="1600.5968"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3061">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_9"
+       width="259.48782"
+       height="76.580551"
+       x="1367.6907"
+       y="1680.3418"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3063">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_10"
+       width="256.32333"
+       height="77.213448"
+       x="1368.9564"
+       y="1760.0869"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3065">votos</title>
+    </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="voto_11"
+       width="259.48782"
+       height="75.947655"
+       x="1367.0577"
+       y="1841.7306"
+       inkscape:label="celda"
+       transform="translate(-37.357143,-832.99493)">
+      <title
+         id="title3067">votos</title>
     </rect>
   </g>
 </svg>

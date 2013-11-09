@@ -256,11 +256,11 @@ def parse_model(svg_file):
         elif id=="referencia":
             x0, y0 = x, y
 
-    svg = doc.getElementsByTagName('svg')
-    svg_height = float(svg[0].getAttribute('height'))
+    # svg = doc.getElementsByTagName('svg')
+    # svg_height = float(svg[0].getAttribute('height'))
 
     # refiere todo al patch de referencia
-
+    print x0, y0
     for i in range(len(tables)):
         tables[i][0] = tables[i][0] - x0
         tables[i][1] = tables[i][1] - y0
@@ -327,13 +327,18 @@ def process_telegram(image_file):
     # modelo de formulario
     x0, y0 = peaks[0]
     tables, cells = parse_model(model_file)
+
     for i in range(len(tables)):
         tables[i][0] = tables[i][0] * processing_scale + x0
         tables[i][1] = tables[i][1] * processing_scale + y0
         tables[i][2] = tables[i][2] * processing_scale
         tables[i][3] = tables[i][3] * processing_scale
 
-    print len(tables),len(cells)
+    for i in range(len(cells)):
+        cells[i][0] = cells[i][0] * processing_scale + x0
+        cells[i][1] = cells[i][1] * processing_scale + y0
+        cells[i][2] = cells[i][2] * processing_scale
+        cells[i][3] = cells[i][3] * processing_scale
 
     # Overlap de cuadrilateros y modelo
     overlap = []
@@ -379,6 +384,12 @@ def process_telegram(image_file):
         tables[i][2] = (tables[i][2] - x0) * median_xratio + x0
         tables[i][3] = (tables[i][3] - y0) * median_yratio + y0
 
+    for i in range(len(cells)):
+        cells[i][0] = (cells[i][0] - x0) * median_xratio + x0
+        cells[i][1] = (cells[i][1] - y0) * median_yratio + y0
+        cells[i][2] = (cells[i][2] - x0) * median_xratio + x0
+        cells[i][3] = (cells[i][3] - y0) * median_yratio + y0
+
     # visualizacion
     plt.close('all')
     fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)
@@ -415,7 +426,7 @@ def process_telegram(image_file):
     #quads
     for q in quads:
         rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
-        ax3.add_patch(rect)
+        ax2.add_patch(rect)
 
     #fields
     x0, y0 = peaks[0]
@@ -423,6 +434,11 @@ def process_telegram(image_file):
         x, y = field[0], field[1]
         w, h = field[2], field[3]
         feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
+        ax3.add_patch(feat)
+    for field in cells:
+        x, y = field[0], field[1]
+        w, h = field[2], field[3]
+        feat = plt.Rectangle((x, y), w, h, edgecolor='y', facecolor='none', linewidth=1)
         ax3.add_patch(feat)
 
     plt.show()
