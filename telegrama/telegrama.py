@@ -270,7 +270,10 @@ def parse_model(svg_file):
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-path = '/home/jrg/hackaton/telegrama'
+#import os
+#os.path.dirname(os.path.abspath(__file__))
+
+path = '/home/pandres/Projects/elecciones2013/recon/telegrama'
 
 #image_file = path+'/040240351_7634.pbm'
 image_file = path+'/040010002_0052.pbm'
@@ -278,111 +281,117 @@ image_file = path+'/040010002_0052.pbm'
 keyword_file = path+'/model/keyword.pbm'
 model_file = path+'/model/cordoba.svg'
 
-# levanta imagen
-img1 = load_image(image_file)
 
-# achico la imagen para acelerar el procesamiento
-processing_scale = 0.5
-img2 = transform.rescale(img1, processing_scale)
-img2 = img2 > 0
+def main(): 
+    # levanta imagen
+    img1 = load_image(image_file)
 
-# operaciones morfológicas (preproc.)
-elem = morphology.square(2)
-#img2 = morphology.binary_dilation(img2, elem)
-img2 = morphology.remove_small_objects(img2, min_size=64, connectivity=8)
+    # achico la imagen para acelerar el procesamiento
+    processing_scale = 0.5
+    img2 = transform.rescale(img1, processing_scale)
+    img2 = img2 > 0
 
-# rectificación
-img3 = rectify(img2)
+    # operaciones morfológicas (preproc.)
+    elem = morphology.square(2)
+    #img2 = morphology.binary_dilation(img2, elem)
+    img2 = morphology.remove_small_objects(img2, min_size=64, connectivity=8)
 
-# detección de lineas horiz y vert
-hlines, vlines = detect_lines(img3)
+    # rectificación
+    img3 = rectify(img2)
 
-# detección de la palabra TELEGRAMA
-keypatch = load_image(keyword_file)
-keypatch = transform.rescale(keypatch, processing_scale)
-peaks = detect_keypatch(img3, keypatch)
-hk, wk = keypatch.shape
+    # detección de lineas horiz y vert
+    hlines, vlines = detect_lines(img3)
 
-# cuadriláteros
-quads = detect_quads(hlines, vlines)
+    # detección de la palabra TELEGRAMA
+    keypatch = load_image(keyword_file)
+    keypatch = transform.rescale(keypatch, processing_scale)
+    peaks = detect_keypatch(img3, keypatch)
+    hk, wk = keypatch.shape
 
-# modelo de formulario
-x0, y0 = peaks[0]
-model = parse_model(model_file)
-for i in range(len(model)):
-    model[i][0] = model[i][0] * processing_scale + x0
-    model[i][1] = model[i][1] * processing_scale + y0
-    model[i][2] = model[i][2] * processing_scale
-    model[i][3] = model[i][3] * processing_scale
+    # cuadriláteros
+    quads = detect_quads(hlines, vlines)
 
-# Overlap de cuadrilateros y modelo
-overlap = []
-for i in range(len(quads)):
-    overlap.append([0] * len(model))
+    # modelo de formulario
+    x0, y0 = peaks[0]
+    model = parse_model(model_file)
+    for i in range(len(model)):
+        model[i][0] = model[i][0] * processing_scale + x0
+        model[i][1] = model[i][1] * processing_scale + y0
+        model[i][2] = model[i][2] * processing_scale
+        model[i][3] = model[i][3] * processing_scale
 
-for i in range(len(quads)):
-    x1q, y1q, x2q, y2q = quads[i][0:4]
-    area_q = (y2q - y1q) * (x2q - x1q)
-    for j in range(len(model)):
-        x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
-        area_m = (y2m - y1m) * (x2m - x1m)
+    # Overlap de cuadrilateros y modelo
+    overlap = []
+    for i in range(len(quads)):
+        overlap.append([0] * len(model))
 
-        x1_inter = max(x1q, x1m)
-        x2_inter = min(x2q, x2m)
-        y1_inter = max(y1q, y1m)
-        y2_inter = min(y2q, y2m)
+    for i in range(len(quads)):
+        x1q, y1q, x2q, y2q = quads[i][0:4]
+        area_q = (y2q - y1q) * (x2q - x1q)
+        for j in range(len(model)):
+            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
+            area_m = (y2m - y1m) * (x2m - x1m)
 
-        if y2_inter > y1_inter and x2_inter > x1_inter:
-            area_inter = (y2_inter - y1_inter) * (x2_inter - x1_inter)
-            area_union = area_q + area_m - area_inter
-            overlap[i][j] = np.math.sqrt(area_inter / area_union)
-# ...
+            x1_inter = max(x1q, x1m)
+            x2_inter = min(x2q, x2m)
+            y1_inter = max(y1q, y1m)
+            y2_inter = min(y2q, y2m)
+
+            if y2_inter > y1_inter and x2_inter > x1_inter:
+                area_inter = (y2_inter - y1_inter) * (x2_inter - x1_inter)
+                area_union = area_q + area_m - area_inter
+                overlap[i][j] = np.math.sqrt(area_inter / area_union)
+    # ...
 
 
-# visualizacion
-plt.close('all')
-fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)
+    # visualizacion
+    plt.close('all')
+    fig, (ax1, ax2, ax3) = plt.subplots(ncols=3)
 
-#imagen original
-ax1.imshow(img1, cmap=cm.Greys_r)
-ax1.set_axis_off()
+    #imagen original
+    ax1.imshow(img1, cmap=cm.Greys_r)
+    ax1.set_axis_off()
 
-#imagen rectificada
-ax2.imshow(img3, cmap=cm.Greys_r)
-ax2.set_axis_off()
+    #imagen rectificada
+    ax2.imshow(img3, cmap=cm.Greys_r)
+    ax2.set_axis_off()
 
-ax3.imshow(img3, cmap=cm.Greys_r)
-ax3.set_axis_off()
+    ax3.imshow(img3, cmap=cm.Greys_r)
+    ax3.set_axis_off()
 
-# lineas verticales
-for lin in vlines:
-    x0, y0, x1, y1 = lin[0:4]
-    feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
-    ax2.add_line(feat)
+    # lineas verticales
+    for lin in vlines:
+        x0, y0, x1, y1 = lin[0:4]
+        feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
+        ax2.add_line(feat)
 
-# lineas horizontales
-for lin in hlines:
-    x0, y0, x1, y1 = lin[0:4]
-    feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
-    ax2.add_line(feat)
+    # lineas horizontales
+    for lin in hlines:
+        x0, y0, x1, y1 = lin[0:4]
+        feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
+        ax2.add_line(feat)
 
-#palabra clave
-for pk in peaks:
-    x, y = pk[0], pk[1]
-    feat = plt.Rectangle((x, y), wk, hk, edgecolor='r', facecolor='none', linewidth=2)
-    ax2.add_patch(feat)
+    #palabra clave
+    for pk in peaks:
+        x, y = pk[0], pk[1]
+        feat = plt.Rectangle((x, y), wk, hk, edgecolor='r', facecolor='none', linewidth=2)
+        ax2.add_patch(feat)
 
-#quads
-for q in quads:
-    rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
-    ax3.add_patch(rect)
+    #quads
+    for q in quads:
+        rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
+        ax3.add_patch(rect)
 
-#fields
-x0, y0 = peaks[0]
-for field in model:
-    x, y = field[0], field[1]
-    w, h = field[2], field[3]
-    feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
-    ax3.add_patch(feat)
+    #fields
+    x0, y0 = peaks[0]
+    for field in model:
+        x, y = field[0], field[1]
+        w, h = field[2], field[3]
+        feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
+        ax3.add_patch(feat)
 
-plt.show()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
