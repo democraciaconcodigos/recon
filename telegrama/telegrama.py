@@ -284,8 +284,9 @@ def main():
     try:
         image_file = os.path.join(PATH, sys.argv[1])
         process_telegram(image_file)
-    except Exception:
+    except Exception, e:
         print >>sys.stderr, "Falta el nombre del telegrama.\n"
+        print e
         return 0
 
 def process_telegram(image_file):
