@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 
@@ -16,9 +17,9 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-    #    {'document_root': settings.MEDIA_ROOT}),
-
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+
+    #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
+    #    {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 )
