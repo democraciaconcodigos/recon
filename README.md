@@ -29,6 +29,6 @@ Branchear desde master:
 
 > git commit -m "mensaje"
 
-> git push nuevo_archivo_o_modificado
+> git push origin nombre_de_branch
 
 
