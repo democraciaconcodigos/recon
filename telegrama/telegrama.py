@@ -280,7 +280,7 @@ keyword_file = path+'/model/keyword.pbm'
 model_file = path+'/model/cordoba.svg'
 
 
-def main(): 
+def main():
     # levanta imagen
     img1 = load_image(image_file)
 
@@ -339,8 +339,22 @@ def main():
                 area_inter = (y2_inter - y1_inter) * (x2_inter - x1_inter)
                 area_union = area_q + area_m - area_inter
                 overlap[i][j] = np.math.sqrt(area_inter / area_union)
-    # ...
 
+    # probar con el de máximo overlap en el caso de que haya muchas detección
+    min_match_overlap = 0.75
+    src, dst = [], []
+    for i in range(len(quads)):
+        x1q, y1q, x2q, y2q = quads[i][0:4]
+        for j in range(len(model)):
+            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
+            if overlap[i][j] < min_match_overlap:
+                src.append([x1q, y1q])
+                src.append([x2q, y2q])
+                dst.append([x1m, y1m])
+                dst.append([x2m, y2m])
+
+    tform = transform.estimate_transform('similarity', np.array(src), np.array(dst))
+    img4 = transform.warp(img3, inverse_map=tform.inverse)
 
     # visualizacion
     plt.close('all')
