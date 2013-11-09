@@ -7,19 +7,18 @@ Reconocimiento de imágenes para el proyecto Democracia con Códigos
 INSTALACION
 ===========
 
- > apt-get install python-skimage
- > apt-get install python-sklearn
- > pip install numpy
+pip install scikit-image==0.8
+pip install numpy
 
 
-Como trabajar
-==== ========
+COMO TRABAJAR
+=============
 
 Branchear desde master:
 
- > git checkout -b nombre_de_branch
- > git add nuevo_archivo_o_modificado
- > git commit -m "mensaje"
- > git push
+git checkout -b nombre_de_branch
+git add nuevo_archivo_o_modificado
+git commit -m "mensaje"
+git push
 
 
