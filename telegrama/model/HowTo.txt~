@@ -1,0 +1,20 @@
+Como crear un modelo
+====================
+
+1) abrir Inkscape
+
+2) "Archivo" -> "Importar" (seleccionar archivo pdf o pbm con el telegrama de referencia)
+
+3) "Archivo" -> "Propiedades de documento" -> "Ajustar página al contenido" (ajustar)
+
+4) Seleccionar herramienta "Crear rectángulos y cuadros" (F4) y dibujar campos usando la imagen como referencia
+
+   - Se puede controlar el color y transparencia yendo a "Objeto" -> "Relleno y borde..."
+
+5) Aasignar un ID representativo a cada cuadro/campo, comenzando con "ID_":
+
+    - Seleccionar herramienta "Seleccionar y transformar objetos" (F1) -> click derecho sobre un rectángulo -> "Propiedades del objeto" -> cambiar campo "id" por uno representativo -> "Aplicar"
+
+    - Dibujar un rectángulo para la parte de la imagen que contiene la palabra "TELEGRAMA" y usar el id "ID_TELEGRAMA" (sin comillas). Esto es así porque el resto de los campos se referencian a la posición de este keyword
+
+6) Guardar archivo .svg
