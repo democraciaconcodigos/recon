@@ -271,7 +271,6 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-#path = '/home/pandres/Projects/elecciones2013/recon/telegrama'
 path = os.path.dirname(os.path.abspath(__file__))
 
 #image_file = path+'/040240351_7634.pbm'
