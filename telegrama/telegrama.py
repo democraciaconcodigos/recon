@@ -267,20 +267,28 @@ def parse_model(svg_file):
 
 # ----------------------------------------------------------------------
 
-import os
+import os, sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-path = os.path.dirname(os.path.abspath(__file__))
+PATH = os.path.dirname(os.path.abspath(__file__))
 
 #image_file = path+'/040240351_7634.pbm'
-image_file = path+'/040010002_0052.pbm'
+#image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
-keyword_file = path+'/model/keyword.pbm'
-model_file = path+'/model/cordoba.svg'
+keyword_file = PATH+'/model/keyword.pbm'
+model_file = PATH+'/model/cordoba.svg'
 
 
 def main():
+    try:
+        image_file = os.path.join(PATH, sys.argv[1])
+        process_telegram(image_file)
+    except Exception:
+        print >>sys.stderr, "Falta el nombre del telegrama.\n"
+        return 0
+
+def process_telegram(image_file):
     # levanta imagen
     img1 = load_image(image_file)
 
@@ -406,4 +414,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
