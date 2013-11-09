@@ -277,7 +277,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 image_file = path+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
 keyword_file = path+'/model/keyword.pbm'
-model_file = path+'/model/cordoba.svg'
+model_file = path+'/model/cordoba2.svg'
 
 
 def main():
@@ -327,7 +327,7 @@ def main():
         x1q, y1q, x2q, y2q = quads[i][0:4]
         area_q = (y2q - y1q) * (x2q - x1q)
         for j in range(len(model)):
-            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
+            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2], model[j][1]+model[j][3]
             area_m = (y2m - y1m) * (x2m - x1m)
 
             x1_inter = max(x1q, x1m)
@@ -342,19 +342,24 @@ def main():
 
     # probar con el de máximo overlap en el caso de que haya muchas detección
     min_match_overlap = 0.75
+    #src, dst = [[x0, y0]], [[x0, y0]]
     src, dst = [], []
     for i in range(len(quads)):
         x1q, y1q, x2q, y2q = quads[i][0:4]
         for j in range(len(model)):
             x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
-            if overlap[i][j] < min_match_overlap:
+            if overlap[i][j] > min_match_overlap:
                 src.append([x1q, y1q])
+                src.append([x2q, y1q])
+                src.append([x1q, y2q])
                 src.append([x2q, y2q])
                 dst.append([x1m, y1m])
+                dst.append([x2m, y1m])
+                dst.append([x1m, y2m])
                 dst.append([x2m, y2m])
 
-    tform = transform.estimate_transform('similarity', np.array(src), np.array(dst))
-    img4 = transform.warp(img3, inverse_map=tform.inverse)
+    tform = transform.estimate_transform('affine', np.array(dst), np.array(src))
+    img4 = transform.warp(img3, inverse_map=tform)
 
     # visualizacion
     plt.close('all')
@@ -368,20 +373,20 @@ def main():
     ax2.imshow(img3, cmap=cm.Greys_r)
     ax2.set_axis_off()
 
-    ax3.imshow(img3, cmap=cm.Greys_r)
+    ax3.imshow(img4, cmap=cm.Greys_r)
     ax3.set_axis_off()
 
-    # lineas verticales
-    for lin in vlines:
-        x0, y0, x1, y1 = lin[0:4]
-        feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
-        ax2.add_line(feat)
+    # # lineas verticales
+    # for lin in vlines:
+    #     x0, y0, x1, y1 = lin[0:4]
+    #     feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
+    #     ax2.add_line(feat)
 
-    # lineas horizontales
-    for lin in hlines:
-        x0, y0, x1, y1 = lin[0:4]
-        feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
-        ax2.add_line(feat)
+    # # lineas horizontales
+    # for lin in hlines:
+    #     x0, y0, x1, y1 = lin[0:4]
+    #     feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
+    #     ax2.add_line(feat)
 
     #palabra clave
     for pk in peaks:
@@ -392,7 +397,7 @@ def main():
     #quads
     for q in quads:
         rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
-        ax3.add_patch(rect)
+        ax2.add_patch(rect)
 
     #fields
     x0, y0 = peaks[0]
