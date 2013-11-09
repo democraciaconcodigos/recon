@@ -1,5 +1,4 @@
 *.py[cod]
-
 # C extensions
 *.so
 
@@ -37,4 +36,5 @@ nosetests.xml
 
 
 *~
+*test.db
 
