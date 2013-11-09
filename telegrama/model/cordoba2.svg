@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.69999999"
-     inkscape:cx="1431.1548"
-     inkscape:cy="2324.155"
+     inkscape:zoom="0.35"
+     inkscape:cx="1376.5474"
+     inkscape:cy="888.52048"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -74,43 +74,51 @@
        inkscape:label="#rect3027" />
     <rect
        inkscape:label="#rect3027"
-       y="-399.30389"
-       x="-452.85138"
-       height="232.27026"
-       width="928.67072"
+       y="-403.84958"
+       x="-458.91229"
+       height="236.81595"
+       width="937.76208"
        id="ID_totales"
        style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none" />
     <rect
        style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="ID_parciales"
-       width="1592.1462"
-       height="1060.3805"
-       x="-457.4722"
+       width="1594.6716"
+       height="1060.8856"
+       x="-459.99759"
        y="-58.505398"
        inkscape:label="#rect3027" />
     <rect
        style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="ID_fiscales"
-       width="1607.5914"
-       height="252.78194"
-       x="-465.77637"
-       y="1493.6985"
+       width="1612.9486"
+       height="254.56766"
+       x="-466.84781"
+       y="1493.3413"
        inkscape:label="#rect3027" />
     <rect
        style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="ID_presidente"
-       width="1602.7764"
-       height="321.09842"
-       x="-461.15518"
-       y="1122.5939"
+       width="1607.7764"
+       height="325.7413"
+       x="-463.29803"
+       y="1121.5225"
        inkscape:label="#rect3027" />
     <rect
        style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="ID_destinatario"
-       width="545.81354"
-       height="170.84169"
-       x="591.43433"
-       y="-655.01819"
+       width="542.68158"
+       height="170.56685"
+       x="593.20953"
+       y="-654.84485"
        inkscape:label="#rect3027" />
+    <rect
+       inkscape:label="#rect3027"
+       y="-404.50034"
+       x="543.45209"
+       height="233.97623"
+       width="593.29071"
+       id="ID_mesa"
+       style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none" />
   </g>
 </svg>

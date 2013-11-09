@@ -276,16 +276,21 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 #image_file = path+'/040240351_7634.pbm'
 #image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
+<<<<<<< HEAD
 keyword_file = PATH+'/model/keyword.pbm'
 model_file = PATH+'/model/cordoba.svg'
+=======
+>>>>>>> field_align
 
+keyword_file = PATH+'/model/keyword.pbm'
+model_file = PATH+'/model/cordoba2.svg'
 
 def main():
     try:
         image_file = os.path.join(PATH, sys.argv[1])
         process_telegram(image_file)
     except Exception, e:
-        print >>sys.stderr, "Falta el nombre del telegrama.\n"
+        print >>sys.stderr, "Uso: python telegrama/telegrama.py archivo_telegrama.\n"
         print e
         return 0
 
@@ -349,26 +354,27 @@ def process_telegram(image_file):
                 area_union = area_q + area_m - area_inter
                 overlap[i][j] = np.math.sqrt(area_inter / area_union)
 
+    #x0, y0 = 0, 0
     # probar con el de máximo overlap en el caso de que haya muchas detección
     min_match_overlap = 0.75
-    #src, dst = [[x0, y0]], [[x0, y0]]
-    src, dst = [], []
+    xratio, yratio = [], []
     for i in range(len(quads)):
         x1q, y1q, x2q, y2q = quads[i][0:4]
         for j in range(len(model)):
             x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
             if overlap[i][j] > min_match_overlap:
-                src.append([x1q, y1q])
-                src.append([x2q, y1q])
-                src.append([x1q, y2q])
-                src.append([x2q, y2q])
-                dst.append([x1m, y1m])
-                dst.append([x2m, y1m])
-                dst.append([x1m, y2m])
-                dst.append([x2m, y2m])
+                yratio.append((y1q-y0) / (y1m-y0))
+                yratio.append((y2q-y0) / (y2m-y0))
+                xratio.append((x1q-x0) / (x1m-x0))
+                xratio.append((x2q-x0) / (x2m-x0))
 
-    tform = transform.estimate_transform('affine', np.array(dst), np.array(src))
-    img4 = transform.warp(img3, inverse_map=tform)
+    median_xratio = np.median(xratio)
+    median_yratio = np.median(yratio)
+    for i in range(len(model)):
+        model[i][0] = (model[i][0] - x0) * median_xratio + x0
+        model[i][1] = (model[i][1] - y0) * median_yratio + y0
+        model[i][2] = (model[i][2] - x0) * median_xratio + x0
+        model[i][3] = (model[i][3] - y0) * median_yratio + y0
 
     # visualizacion
     plt.close('all')
@@ -382,7 +388,7 @@ def process_telegram(image_file):
     ax2.imshow(img3, cmap=cm.Greys_r)
     ax2.set_axis_off()
 
-    ax3.imshow(img4, cmap=cm.Greys_r)
+    ax3.imshow(img3, cmap=cm.Greys_r)
     ax3.set_axis_off()
 
     # # lineas verticales
@@ -406,7 +412,7 @@ def process_telegram(image_file):
     #quads
     for q in quads:
         rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
-        ax2.add_patch(rect)
+        ax3.add_patch(rect)
 
     #fields
     x0, y0 = peaks[0]
