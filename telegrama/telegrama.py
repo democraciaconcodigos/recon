@@ -267,13 +267,12 @@ def parse_model(svg_file):
 
 # ----------------------------------------------------------------------
 
+import os
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-#import os
-#os.path.dirname(os.path.abspath(__file__))
-
-path = '/home/pandres/Projects/elecciones2013/recon/telegrama'
+#path = '/home/pandres/Projects/elecciones2013/recon/telegrama'
+path = os.path.dirname(os.path.abspath(__file__))
 
 #image_file = path+'/040240351_7634.pbm'
 image_file = path+'/040010002_0052.pbm'
