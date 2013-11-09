@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 
-UPLOAD_TO = settings.MEDIA_ROOT
+UPLOAD_TO = settings.TELEGRAMA_MEDIA_ROOT
 
 class Telegram(models.Model):
     id = models.CharField(max_length=30, unique=True, db_index=True, primary_key=True)
