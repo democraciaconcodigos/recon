@@ -276,13 +276,8 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 #image_file = path+'/040240351_7634.pbm'
 #image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
-<<<<<<< HEAD
 keyword_file = PATH+'/model/keyword.pbm'
 model_file = PATH+'/model/cordoba.svg'
-=======
-keyword_file = path+'/model/keyword.pbm'
-model_file = path+'/model/cordoba2.svg'
->>>>>>> f9f91f0530f23245ab1a78199b04bae282172559
 
 
 def main():
