@@ -240,30 +240,36 @@ def detect_quads(hlines, vlines):
 # @param svg_file        modelo
 def parse_model(svg_file):
     doc = minidom.parse(svg_file)
-    model = []
+    tables = []
+    cells = []
     x0, y0 = 0., 0.
     for rect in doc.getElementsByTagName('rect'):
         x = float(rect.getAttribute('x'))
         y = float(rect.getAttribute('y'))
         width = float(rect.getAttribute('width'))
         height = float(rect.getAttribute('height'))
-        id = rect.getAttribute('id').lstrip()
-        if id.find("ID_") == 0:
-            id = id[3:]
-            #model.append({'x':x, 'y':y, 'width':width, 'height':height, 'id':str(id)})
-            model.append([x, y, width, height, id])
-            if id=="TELEGRAMA":
-                x0, y0 = x, y
+        id = rect.getAttribute('inkscape:label').lstrip()
+        if id.find("tabla") == 0:
+            tables.append([x, y, width, height, id])
+        elif id.find("celda") == 0:
+            cells.append([x, y, width, height, id])
+        elif id=="referencia":
+            x0, y0 = x, y
 
     svg = doc.getElementsByTagName('svg')
     svg_height = float(svg[0].getAttribute('height'))
 
     # refiere todo al patch de referencia
-    for i in range(len(model)):
-        model[i][0] = model[i][0] - x0
-        model[i][1] = model[i][1] - y0
 
-    return model
+    for i in range(len(tables)):
+        tables[i][0] = tables[i][0] - x0
+        tables[i][1] = tables[i][1] - y0
+
+    for i in range(len(cells)):
+        cells[i][0] = cells[i][0] - x0
+        cells[i][1] = cells[i][1] - y0
+
+    return tables, cells
 
 # ----------------------------------------------------------------------
 
@@ -276,14 +282,9 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 #image_file = path+'/040240351_7634.pbm'
 #image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
-<<<<<<< HEAD
-keyword_file = PATH+'/model/keyword.pbm'
-model_file = PATH+'/model/cordoba.svg'
-=======
->>>>>>> field_align
 
 keyword_file = PATH+'/model/keyword.pbm'
-model_file = PATH+'/model/cordoba2.svg'
+model_file = PATH+'/model/referencias/2013/cordoba/cordoba_2013.svg'
 
 def main():
     try:
@@ -325,23 +326,25 @@ def process_telegram(image_file):
 
     # modelo de formulario
     x0, y0 = peaks[0]
-    model = parse_model(model_file)
-    for i in range(len(model)):
-        model[i][0] = model[i][0] * processing_scale + x0
-        model[i][1] = model[i][1] * processing_scale + y0
-        model[i][2] = model[i][2] * processing_scale
-        model[i][3] = model[i][3] * processing_scale
+    tables, cells = parse_model(model_file)
+    for i in range(len(tables)):
+        tables[i][0] = tables[i][0] * processing_scale + x0
+        tables[i][1] = tables[i][1] * processing_scale + y0
+        tables[i][2] = tables[i][2] * processing_scale
+        tables[i][3] = tables[i][3] * processing_scale
+
+    print len(tables),len(cells)
 
     # Overlap de cuadrilateros y modelo
     overlap = []
     for i in range(len(quads)):
-        overlap.append([0] * len(model))
+        overlap.append([0] * len(tables))
 
     for i in range(len(quads)):
         x1q, y1q, x2q, y2q = quads[i][0:4]
         area_q = (y2q - y1q) * (x2q - x1q)
-        for j in range(len(model)):
-            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2], model[j][1]+model[j][3]
+        for j in range(len(tables)):
+            x1m, y1m, x2m, y2m = tables[j][0], tables[j][1], tables[j][0]+tables[j][2], tables[j][1]+tables[j][3]
             area_m = (y2m - y1m) * (x2m - x1m)
 
             x1_inter = max(x1q, x1m)
@@ -360,8 +363,8 @@ def process_telegram(image_file):
     xratio, yratio = [], []
     for i in range(len(quads)):
         x1q, y1q, x2q, y2q = quads[i][0:4]
-        for j in range(len(model)):
-            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
+        for j in range(len(tables)):
+            x1m, y1m, x2m, y2m = tables[j][0], tables[j][1], tables[j][0]+tables[j][2]-1.0, tables[j][1]+tables[j][3]-1.0
             if overlap[i][j] > min_match_overlap:
                 yratio.append((y1q-y0) / (y1m-y0))
                 yratio.append((y2q-y0) / (y2m-y0))
@@ -370,11 +373,11 @@ def process_telegram(image_file):
 
     median_xratio = np.median(xratio)
     median_yratio = np.median(yratio)
-    for i in range(len(model)):
-        model[i][0] = (model[i][0] - x0) * median_xratio + x0
-        model[i][1] = (model[i][1] - y0) * median_yratio + y0
-        model[i][2] = (model[i][2] - x0) * median_xratio + x0
-        model[i][3] = (model[i][3] - y0) * median_yratio + y0
+    for i in range(len(tables)):
+        tables[i][0] = (tables[i][0] - x0) * median_xratio + x0
+        tables[i][1] = (tables[i][1] - y0) * median_yratio + y0
+        tables[i][2] = (tables[i][2] - x0) * median_xratio + x0
+        tables[i][3] = (tables[i][3] - y0) * median_yratio + y0
 
     # visualizacion
     plt.close('all')
@@ -416,7 +419,7 @@ def process_telegram(image_file):
 
     #fields
     x0, y0 = peaks[0]
-    for field in model:
+    for field in tables:
         x, y = field[0], field[1]
         w, h = field[2], field[3]
         feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
