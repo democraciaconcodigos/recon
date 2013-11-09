@@ -47,9 +47,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.39500891"
-     inkscape:cx="1331.1613"
-     inkscape:cy="1264.2625"
+     inkscape:zoom="0.27931348"
+     inkscape:cx="-434.27064"
+     inkscape:cy="1053.4689"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -126,23 +126,6 @@
        x="52.142857"
        y="2425.7144"
        transform="translate(-37.357143,-832.99493)"
-       inkscape:label="tabla" />
-    <rect
-       style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="referencia"
-       width="413.79483"
-       height="53.445263"
-       x="630.92688"
-       y="196.80717"
-       transform="translate(-37.357143,-832.99493)"
-       inkscape:label="referencia" />
-    <rect
-       style="opacity:0.506;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="cabecera"
-       width="532.85712"
-       height="172.85713"
-       x="1061.2142"
-       y="-606.56635"
        inkscape:label="tabla" />
     <rect
        style="opacity:0.5;fill:#000080;fill-opacity:1;fill-rule:nonzero;stroke:none"
@@ -281,7 +264,7 @@
     </rect>
     <rect
        style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="voyo_8"
+       id="voto_8"
        width="256.95624"
        height="75.947655"
        x="1367.6907"
@@ -327,5 +310,23 @@
       <title
          id="title3067">votos</title>
     </rect>
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="cabecera"
+       width="535.43097"
+       height="175.9454"
+       x="1097.4436"
+       y="224.04558"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="cabecera" />
+    <rect
+       style="opacity:0.5;fill:#00ff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="referencia"
+       width="412.61884"
+       height="49.227844"
+       x="633.24908"
+       y="198.16197"
+       transform="translate(-37.357143,-832.99493)"
+       inkscape:label="referencia" />
   </g>
 </svg>

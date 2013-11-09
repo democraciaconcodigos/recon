@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from skimage import data, filter, transform, morphology, feature
+from skimage import io, data, filter, transform, morphology, feature
 from xml.dom import minidom
 
 def sqdist(p0, p1):
@@ -248,19 +248,19 @@ def parse_model(svg_file):
         y = float(rect.getAttribute('y'))
         width = float(rect.getAttribute('width'))
         height = float(rect.getAttribute('height'))
-        id = rect.getAttribute('inkscape:label').lstrip()
-        if id.find("tabla") == 0:
+        label = rect.getAttribute('inkscape:label').lstrip()
+        id = rect.getAttribute('id').lstrip()
+        if label.find("tabla") == 0:
             tables.append([x, y, width, height, id])
-        elif id.find("celda") == 0:
+        elif label.find("celda") == 0:
             cells.append([x, y, width, height, id])
-        elif id=="referencia":
+        elif label=="referencia":
             x0, y0 = x, y
 
     # svg = doc.getElementsByTagName('svg')
     # svg_height = float(svg[0].getAttribute('height'))
 
     # refiere todo al patch de referencia
-    print x0, y0
     for i in range(len(tables)):
         tables[i][0] = tables[i][0] - x0
         tables[i][1] = tables[i][1] - y0
@@ -362,8 +362,7 @@ def process_telegram(image_file):
                 area_union = area_q + area_m - area_inter
                 overlap[i][j] = np.math.sqrt(area_inter / area_union)
 
-    #x0, y0 = 0, 0
-    # probar con el de máximo overlap en el caso de que haya muchas detección
+    # estimar escalado que alinea los quads detectados con el modelo
     min_match_overlap = 0.75
     xratio, yratio = [], []
     for i in range(len(quads)):
@@ -389,6 +388,26 @@ def process_telegram(image_file):
         cells[i][1] = (cells[i][1] - y0) * median_yratio + y0
         cells[i][2] = (cells[i][2] - x0) * median_xratio + x0
         cells[i][3] = (cells[i][3] - y0) * median_yratio + y0
+
+    # cropp de celdas en img original
+    base_name = image_file.split(".")[0]
+    for n in range(len(cells)):
+        x1, y1, w, h, id = cells[n]
+        x1 = int(x1)
+        y1 = int(y1)
+        w = int(w)
+        h = int(h)
+        x2 = x1 + w - 1
+        y2 = y1 + h - 1
+
+        subimg = np.zeros([h, w])
+        for i in range(y1, y2+1):
+            for j in range(x1, x2+1):
+                subimg[i-y1][j-x1] = int(img2[i][j])
+
+        cell_name = base_name + '-' + cells[n][4] + '.tif'
+        io.imsave(cell_name, subimg)
+
 
     # visualizacion
     plt.close('all')
