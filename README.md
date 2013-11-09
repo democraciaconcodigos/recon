@@ -7,6 +7,12 @@ Reconocimiento de imágenes para el proyecto Democracia con Códigos
 Instalacion
 ===========
 
+Armar el entorno:
+
+> mkvirtualenv recon
+
+> workon recon
+
 > pip install scikit-image==0.8
 
 > pip install numpy
