@@ -9,11 +9,13 @@ Instalacion
 
 Armar el entorno:
 
+> apt-get install python-skimage
+
+> apt-get install python-sklearn
+
 > mkvirtualenv recon
 
 > workon recon
-
-> pip install scikit-image==0.8
 
 > pip install numpy
 
@@ -29,6 +31,6 @@ Branchear desde master:
 
 > git commit -m "mensaje"
 
-> git push nuevo_archivo_o_modificado
+> git push origin nombre_de_branch
 
 

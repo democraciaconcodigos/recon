@@ -1,6 +1,8 @@
 Como crear un modelo
 ====================
 
+0) convertir pdf a pbm "pdfimages archivo.pdf archivo"
+
 1) abrir Inkscape
 
 2) "Archivo" -> "Importar" (seleccionar archivo pdf o pbm con el telegrama de referencia)

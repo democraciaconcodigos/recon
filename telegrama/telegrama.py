@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from skimage import data, filter, transform, morphology, feature
+from skimage import io, data, filter, transform, morphology, feature
 from xml.dom import minidom
 
 def sqdist(p0, p1):
@@ -240,47 +240,62 @@ def detect_quads(hlines, vlines):
 # @param svg_file        modelo
 def parse_model(svg_file):
     doc = minidom.parse(svg_file)
-    model = []
+    tables = []
+    cells = []
     x0, y0 = 0., 0.
     for rect in doc.getElementsByTagName('rect'):
         x = float(rect.getAttribute('x'))
         y = float(rect.getAttribute('y'))
         width = float(rect.getAttribute('width'))
         height = float(rect.getAttribute('height'))
+        label = rect.getAttribute('inkscape:label').lstrip()
         id = rect.getAttribute('id').lstrip()
-        if id.find("ID_") == 0:
-            id = id[3:]
-            #model.append({'x':x, 'y':y, 'width':width, 'height':height, 'id':str(id)})
-            model.append([x, y, width, height, id])
-            if id=="TELEGRAMA":
-                x0, y0 = x, y
+        if label.find("tabla") == 0:
+            tables.append([x, y, width, height, id])
+        elif label.find("celda") == 0:
+            cells.append([x, y, width, height, id])
+        elif label=="referencia":
+            x0, y0 = x, y
 
-    svg = doc.getElementsByTagName('svg')
-    svg_height = float(svg[0].getAttribute('height'))
+    # svg = doc.getElementsByTagName('svg')
+    # svg_height = float(svg[0].getAttribute('height'))
 
     # refiere todo al patch de referencia
-    for i in range(len(model)):
-        model[i][0] = model[i][0] - x0
-        model[i][1] = model[i][1] - y0
+    for i in range(len(tables)):
+        tables[i][0] = tables[i][0] - x0
+        tables[i][1] = tables[i][1] - y0
 
-    return model
+    for i in range(len(cells)):
+        cells[i][0] = cells[i][0] - x0
+        cells[i][1] = cells[i][1] - y0
+
+    return tables, cells
 
 # ----------------------------------------------------------------------
 
-import os
+import os, sys
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-path = os.path.dirname(os.path.abspath(__file__))
+PATH = os.path.dirname(os.path.abspath(__file__))
 
 #image_file = path+'/040240351_7634.pbm'
-image_file = path+'/040010002_0052.pbm'
+#image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
-keyword_file = path+'/model/keyword.pbm'
-model_file = path+'/model/cordoba.svg'
 
+keyword_file = PATH+'/model/keyword.pbm'
+model_file = PATH+'/model/referencias/2013/cordoba/cordoba_2013.svg'
 
-def main(): 
+def main():
+    try:
+        image_file = os.path.join(PATH, sys.argv[1])
+        process_telegram(image_file)
+    except Exception, e:
+        print >>sys.stderr, "Uso: python telegrama/telegrama.py archivo_telegrama.\n"
+        print e
+        return 0
+
+def process_telegram(image_file):
     # levanta imagen
     img1 = load_image(image_file)
 
@@ -311,23 +326,30 @@ def main():
 
     # modelo de formulario
     x0, y0 = peaks[0]
-    model = parse_model(model_file)
-    for i in range(len(model)):
-        model[i][0] = model[i][0] * processing_scale + x0
-        model[i][1] = model[i][1] * processing_scale + y0
-        model[i][2] = model[i][2] * processing_scale
-        model[i][3] = model[i][3] * processing_scale
+    tables, cells = parse_model(model_file)
+
+    for i in range(len(tables)):
+        tables[i][0] = tables[i][0] * processing_scale + x0
+        tables[i][1] = tables[i][1] * processing_scale + y0
+        tables[i][2] = tables[i][2] * processing_scale
+        tables[i][3] = tables[i][3] * processing_scale
+
+    for i in range(len(cells)):
+        cells[i][0] = cells[i][0] * processing_scale + x0
+        cells[i][1] = cells[i][1] * processing_scale + y0
+        cells[i][2] = cells[i][2] * processing_scale
+        cells[i][3] = cells[i][3] * processing_scale
 
     # Overlap de cuadrilateros y modelo
     overlap = []
     for i in range(len(quads)):
-        overlap.append([0] * len(model))
+        overlap.append([0] * len(tables))
 
     for i in range(len(quads)):
         x1q, y1q, x2q, y2q = quads[i][0:4]
         area_q = (y2q - y1q) * (x2q - x1q)
-        for j in range(len(model)):
-            x1m, y1m, x2m, y2m = model[j][0], model[j][1], model[j][0]+model[j][2]-1.0, model[j][1]+model[j][3]-1.0
+        for j in range(len(tables)):
+            x1m, y1m, x2m, y2m = tables[j][0], tables[j][1], tables[j][0]+tables[j][2], tables[j][1]+tables[j][3]
             area_m = (y2m - y1m) * (x2m - x1m)
 
             x1_inter = max(x1q, x1m)
@@ -339,7 +361,52 @@ def main():
                 area_inter = (y2_inter - y1_inter) * (x2_inter - x1_inter)
                 area_union = area_q + area_m - area_inter
                 overlap[i][j] = np.math.sqrt(area_inter / area_union)
-    # ...
+
+    # estimar escalado que alinea los quads detectados con el modelo
+    min_match_overlap = 0.75
+    xratio, yratio = [], []
+    for i in range(len(quads)):
+        x1q, y1q, x2q, y2q = quads[i][0:4]
+        for j in range(len(tables)):
+            x1m, y1m, x2m, y2m = tables[j][0], tables[j][1], tables[j][0]+tables[j][2]-1.0, tables[j][1]+tables[j][3]-1.0
+            if overlap[i][j] > min_match_overlap:
+                yratio.append((y1q-y0) / (y1m-y0))
+                yratio.append((y2q-y0) / (y2m-y0))
+                xratio.append((x1q-x0) / (x1m-x0))
+                xratio.append((x2q-x0) / (x2m-x0))
+
+    median_xratio = np.median(xratio)
+    median_yratio = np.median(yratio)
+    for i in range(len(tables)):
+        tables[i][0] = (tables[i][0] - x0) * median_xratio + x0
+        tables[i][1] = (tables[i][1] - y0) * median_yratio + y0
+        tables[i][2] = (tables[i][2] - x0) * median_xratio + x0
+        tables[i][3] = (tables[i][3] - y0) * median_yratio + y0
+
+    for i in range(len(cells)):
+        cells[i][0] = (cells[i][0] - x0) * median_xratio + x0
+        cells[i][1] = (cells[i][1] - y0) * median_yratio + y0
+        cells[i][2] = (cells[i][2] - x0) * median_xratio + x0
+        cells[i][3] = (cells[i][3] - y0) * median_yratio + y0
+
+    # cropp de celdas en img original
+    base_name = image_file.split(".")[0]
+    for n in range(len(cells)):
+        x1, y1, w, h, id = cells[n]
+        x1 = int(x1)
+        y1 = int(y1)
+        w = int(w)
+        h = int(h)
+        x2 = x1 + w - 1
+        y2 = y1 + h - 1
+
+        subimg = np.zeros([h, w])
+        for i in range(y1, y2+1):
+            for j in range(x1, x2+1):
+                subimg[i-y1][j-x1] = int(img2[i][j])
+
+        cell_name = base_name + '-' + cells[n][4] + '.tif'
+        io.imsave(cell_name, subimg)
 
 
     # visualizacion
@@ -357,17 +424,17 @@ def main():
     ax3.imshow(img3, cmap=cm.Greys_r)
     ax3.set_axis_off()
 
-    # lineas verticales
-    for lin in vlines:
-        x0, y0, x1, y1 = lin[0:4]
-        feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
-        ax2.add_line(feat)
+    # # lineas verticales
+    # for lin in vlines:
+    #     x0, y0, x1, y1 = lin[0:4]
+    #     feat = plt.Line2D((x0, x1), (y0, y1), color='g', linewidth=2)
+    #     ax2.add_line(feat)
 
-    # lineas horizontales
-    for lin in hlines:
-        x0, y0, x1, y1 = lin[0:4]
-        feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
-        ax2.add_line(feat)
+    # # lineas horizontales
+    # for lin in hlines:
+    #     x0, y0, x1, y1 = lin[0:4]
+    #     feat = plt.Line2D([x0, x1], [y0, y1], color='b', linewidth=1)
+    #     ax2.add_line(feat)
 
     #palabra clave
     for pk in peaks:
@@ -378,18 +445,23 @@ def main():
     #quads
     for q in quads:
         rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
-        ax3.add_patch(rect)
+        ax2.add_patch(rect)
 
     #fields
     x0, y0 = peaks[0]
-    for field in model:
+    for field in tables:
         x, y = field[0], field[1]
         w, h = field[2], field[3]
         feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
+        ax3.add_patch(feat)
+    for field in cells:
+        x, y = field[0], field[1]
+        w, h = field[2], field[3]
+        feat = plt.Rectangle((x, y), w, h, edgecolor='y', facecolor='none', linewidth=1)
         ax3.add_patch(feat)
 
     plt.show()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
