@@ -6,3 +6,4 @@ logilab-common==0.60.0
 numpy==1.8.0
 pylint==1.0.0
 wsgiref==0.1.2
+scikit-learn==0.14.1
