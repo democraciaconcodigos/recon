@@ -37,4 +37,5 @@ nosetests.xml
 
 *~
 *test.db
-
+*CELDA_*.tif
+*TABLA_*.tif

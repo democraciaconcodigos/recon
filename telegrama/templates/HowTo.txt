@@ -1,0 +1,43 @@
+Como crear un modelo de telegrama
+=================================
+
+1. Seleccionar un telegrama de referencia. Preferiblemente bien alineado (de caso contrario hay que
+alinearlo manualmente en inkscape)
+
+2. Convertir el pdf a una imagen pbm usando el siguiente comando:
+
+   $ pdfimages archivo.pdf archivo
+
+3. Abrir Inkscape (www.inkscape.org) y seguir los pasos a continuación
+
+4. "Archivo" -> "Importar" (seleccionar archivo pbm generado)
+
+5. "Archivo" -> "Propiedades de documento" -> "Ajustar página al contenido" -> "Ajustar página a
+dibujo o selección"
+
+6. Seleccionar herramienta "Crear rectángulos y cuadros" (F4) y dibujar los distintos campos:
+
+   6.1. Dibujar un rectángulo lo mas ajustado posible a la palabra "TELEGRAMA". Asignarle como "Id"
+   la palabra "TELEGRAMA" y como "Etiqueta" la palabra "REFERENCIA".
+
+   Para asignar un Id o Etiqueta a un objeto ya creado, se debe primero seleccionar la herramienta
+   "Seleccionar y transformar objetos" (F1), luego hacer click derecho sobre el objeto (rectángulo),
+   seleccionar la opción "Propiedades del objeto", insertar el Id o Etiqueta deseado y presionar el
+   botón "Aplicar"
+
+   Se puede controlar el color y nivel de los objetos transparencia yendo a "Objeto" -> "Relleno y
+   borde..."
+
+   6.2. Siguiendo el mismo procedimiento anterior, dibujar rectángulos que representen Tablas de
+   valores. Asignarles como "Etiqueta" la palabra "TABLA" y como "Id" la palabra "TABLA_#", en donde
+   # es un número creciente. Estos valores se usarán luego para referenciar cada uno de las
+   tablas/cuadros en el telegrama.
+
+   6.3. Siguiendo el mismo procedimiento anterior, dibujar rectángulos que representen celdas
+   individuales (p. ej. los campos con números manuscritos). Asignarles como Id la palabra "CELDA" y
+   como "Etiqueta" la palabra "CELDA_#", en donde # es un número creciente. Estos valores se usarán
+   luego para referenciar cada uno de los campos o celdas de interés.
+
+7. Guardar el archivo .svg
+
+En el directorio "templates/" se puede encontrar un ejemplo.

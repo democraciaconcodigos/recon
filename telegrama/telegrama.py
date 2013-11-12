@@ -250,24 +250,28 @@ def parse_model(svg_file):
         height = float(rect.getAttribute('height'))
         label = rect.getAttribute('inkscape:label').lstrip()
         id = rect.getAttribute('id').lstrip()
-        if label.find("tabla") == 0:
-            tables.append([x, y, width, height, id])
-        elif label.find("celda") == 0:
-            cells.append([x, y, width, height, id])
-        elif label=="referencia":
+        if label=="REFERENCIA":
             x0, y0 = x, y
+        elif label.find("TABLA") == 0:
+            tables.append([x, y, width, height, id])
+        elif label.find("CELDA") == 0:
+            cells.append([x, y, width, height, id])
 
-    # svg = doc.getElementsByTagName('svg')
-    # svg_height = float(svg[0].getAttribute('height'))
+    image = doc.getElementsByTagName('image')
+    image_cx = float(image[0].getAttribute('x'))
+    image_cy = float(image[0].getAttribute('y'))
+
+    x0 = x0 - image_cx
+    y0 = y0 - image_cy
 
     # refiere todo al patch de referencia
     for i in range(len(tables)):
-        tables[i][0] = tables[i][0] - x0
-        tables[i][1] = tables[i][1] - y0
+        tables[i][0] = tables[i][0] - image_cx - x0
+        tables[i][1] = tables[i][1] - image_cy - y0
 
     for i in range(len(cells)):
-        cells[i][0] = cells[i][0] - x0
-        cells[i][1] = cells[i][1] - y0
+        cells[i][0] = cells[i][0] - image_cx - x0
+        cells[i][1] = cells[i][1] - image_cy - y0
 
     return tables, cells
 
@@ -283,8 +287,8 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 #image_file = PATH+'/040010002_0052.pbm'
 #image_file = path+'/030010001_0001.pbm'
 
-keyword_file = PATH+'/model/keyword.pbm'
-model_file = PATH+'/model/referencias/2013/cordoba/cordoba_2013.svg'
+keyword_file = PATH + '/templates/keyword.pbm'
+model_file = PATH + '/templates/CordobaOct2013.svg'
 
 def main():
     try:
@@ -307,27 +311,28 @@ def process_telegram(image_file):
     # operaciones morfológicas (preproc.)
     elem = morphology.square(2)
     #img2 = morphology.binary_dilation(img2, elem)
-    img2 = morphology.remove_small_objects(img2, min_size=64, connectivity=8)
+    img3 = morphology.remove_small_objects(img2, min_size=64, connectivity=8)
 
     # rectificación
-    img3 = rectify(img2)
+    img4 = rectify(img3)
 
     # detección de lineas horiz y vert
-    hlines, vlines = detect_lines(img3)
+    hlines, vlines = detect_lines(img4)
 
     # detección de la palabra TELEGRAMA
     keypatch = load_image(keyword_file)
     keypatch = transform.rescale(keypatch, processing_scale)
-    peaks = detect_keypatch(img3, keypatch)
+    peaks = detect_keypatch(img4, keypatch)
     hk, wk = keypatch.shape
 
     # cuadriláteros
     quads = detect_quads(hlines, vlines)
 
     # modelo de formulario
-    x0, y0 = peaks[0]
     tables, cells = parse_model(model_file)
 
+    # coordenadas referidas al keyword detectado
+    x0, y0 = peaks[0]
     for i in range(len(tables)):
         tables[i][0] = tables[i][0] * processing_scale + x0
         tables[i][1] = tables[i][1] * processing_scale + y0
@@ -389,25 +394,25 @@ def process_telegram(image_file):
         cells[i][2] = (cells[i][2] - x0) * median_xratio + x0
         cells[i][3] = (cells[i][3] - y0) * median_yratio + y0
 
-    # cropp de celdas en img original
-    base_name = image_file.split(".")[0]
-    for n in range(len(cells)):
-        x1, y1, w, h, id = cells[n]
-        x1 = int(x1)
-        y1 = int(y1)
-        w = int(w)
-        h = int(h)
-        x2 = x1 + w - 1
-        y2 = y1 + h - 1
+    # crop de celdas en img original
+    base_name = image_file[:image_file.rfind(".")]
+    for elem in (tables, cells):
+        for n in range(len(elem)):
+            x1, y1, w, h, id = elem[n]
+            x1 = int(x1)
+            y1 = int(y1)
+            w = int(w)
+            h = int(h)
+            x2 = x1 + w - 1
+            y2 = y1 + h - 1
 
-        subimg = np.zeros([h, w])
-        for i in range(y1, y2+1):
-            for j in range(x1, x2+1):
-                subimg[i-y1][j-x1] = int(img2[i][j])
+            subimg = np.zeros([h, w])
+            for i in range(y1, y2+1):
+                for j in range(x1, x2+1):
+                    subimg[i-y1][j-x1] = int(img2[i][j])
 
-        cell_name = base_name + '-' + cells[n][4] + '.tif'
-        io.imsave(cell_name, subimg)
-
+            elem_name = base_name + '-' + elem[n][4] + '.tif'
+            io.imsave(elem_name, subimg)
 
     # visualizacion
     plt.close('all')
@@ -444,7 +449,7 @@ def process_telegram(image_file):
 
     #quads
     for q in quads:
-        rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='yellow', facecolor='none', linewidth=2)
+        rect = plt.Rectangle((q[0], q[1]), q[2]-q[0], q[3]-q[1], edgecolor='y', facecolor='none', linewidth=2)
         ax2.add_patch(rect)
 
     #fields
@@ -452,16 +457,15 @@ def process_telegram(image_file):
     for field in tables:
         x, y = field[0], field[1]
         w, h = field[2], field[3]
-        feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=1)
+        feat = plt.Rectangle((x, y), w, h, edgecolor='r', facecolor='none', linewidth=2)
         ax3.add_patch(feat)
     for field in cells:
         x, y = field[0], field[1]
         w, h = field[2], field[3]
-        feat = plt.Rectangle((x, y), w, h, edgecolor='y', facecolor='none', linewidth=1)
+        feat = plt.Rectangle((x, y), w, h, edgecolor='g', facecolor='none', linewidth=2)
         ax3.add_patch(feat)
 
     plt.show()
-
 
 if __name__ == "__main__":
     sys.exit(main())
