@@ -4,6 +4,7 @@
 import numpy as np
 from skimage import io, data, filter, transform, morphology, feature
 from xml.dom import minidom
+from scipy import signal
 
 def sqdist(p0, p1):
     dx = p0[0] - p1[0]
@@ -133,11 +134,11 @@ def detect_lines(img, simplify=False):
                 lines[i][6] =  np.math.sqrt(sqdist((lines[i][0],lines[i][1]), (lines[i][2],lines[i][3])))
                 i = i+1
 
-    # ordena por longitud decreciente
-    vlines = sorted(vlines, key=lambda a_entry: a_entry[6])
-    vlines = vlines[::-1]
-    hlines = sorted(hlines, key=lambda a_entry: a_entry[6])
-    hlines = hlines[::-1]
+    # # ordena por longitud decreciente
+    # vlines = sorted(vlines, key=lambda a_entry: a_entry[6])
+    # vlines = vlines[::-1]
+    # hlines = sorted(hlines, key=lambda a_entry: a_entry[6])
+    # hlines = hlines[::-1]
 
     return hlines, vlines
 
@@ -262,6 +263,59 @@ def parse_model(svg_file):
 
     return tables, cells
 
+## Procesa la celda para mandar al OCR
+#
+# @param sugimg          imagen de la celda
+def process_cell(img):
+
+    # la binariza en caso de que sea escala de grises
+    if not img.dtype == 'bool':
+        img = img > 0
+
+    h_k = 0.8
+    sum0 = np.sum(img, 0)
+    thr0 = sum0 < h_k * img.shape[0]
+    thr0 = thr0.reshape(len(thr0), 1)
+
+    w_k = 0.5
+    sum1 = np.sum(img, 1)
+    thr1 = sum1 < w_k * img.shape[1]
+    thr1 = thr1.reshape(len(thr1), 1)
+
+    mask = thr0.transpose() * thr1
+    mask_lines = mask.copy()
+
+    elem = morphology.square(5)
+    mask = morphology.binary_erosion(mask, elem)
+
+    img1 = np.bitwise_and(mask, img)
+
+    # segmentación del bloque de números
+    kerw = 5
+    thr_k = 0.8
+
+    sum0 = np.sum(img1, 0)
+    sum0 = signal.medfilt(sum0, kerw)
+    thr0 = sum0 > thr_k * np.median(sum0)
+    thr0 = np.bitwise_and(thr0.cumsum() > 0, np.flipud(np.flipud(thr0).cumsum() > 0))
+    thr0 = thr0.reshape(len(thr0), 1)
+
+    sum1 = np.sum(img1, 1)
+    sum1 = signal.medfilt(sum1, kerw)
+    thr1 = sum1 > thr_k * np.median(sum1)
+    thr1 = np.bitwise_and(thr1.cumsum() > 0, np.flipud(np.flipud(thr1).cumsum() > 0))
+    thr1 = thr1.reshape(len(thr1), 1)
+
+    mask = thr0.transpose() * thr1
+    mask = morphology.binary_dilation(mask, morphology.square(2))
+
+    img = np.bitwise_and(mask_lines.astype(img.dtype), img)
+    img = morphology.binary_dilation(img, morphology.disk(1))
+    img = morphology.binary_erosion(img, morphology.disk(1))
+
+    return np.bitwise_and(mask, img)
+
+
 # ----------------------------------------------------------------------
 
 import os, sys
@@ -291,7 +345,7 @@ def process_telegram(image_file):
     img1 = load_image(image_file)
 
     # achico la imagen para acelerar el procesamiento
-    processing_scale = 0.33
+    processing_scale = 0.5
     img2 = transform.rescale(img1, processing_scale)
     img2 = img2 > 0
 
@@ -395,24 +449,41 @@ def process_telegram(image_file):
         cells[i][3] = (cells[i][3] - y0) * median_yratio + y0
 
     # crop de celdas en img original
+    base_img = img1
+    if not base_img is img1:
+        processing_scale = 1.0
+    base_img = np.bitwise_not(base_img);
     base_name = image_file[:image_file.rfind(".")]
-    for elem in (tables, cells):
+
+    # elem = morphology.square(2)
+    # base_img = morphology.binary_dilation(base_img, elem)
+    # base_img = morphology.binary_erosion(base_img, elem)
+
+    # cropear celdas y tablas para guardar
+    img_ext = '.jpg'
+    for elem in (cells, tables):
         for n in range(len(elem)):
             x1, y1, w, h, id = elem[n]
-            x1 = int(x1)
-            y1 = int(y1)
-            w = int(w)
-            h = int(h)
-            x2 = x1 + w - 1
-            y2 = y1 + h - 1
+            x1 = int(x1 / processing_scale)
+            y1 = int(y1 / processing_scale)
+            w = int(w / processing_scale)
+            h = int(h / processing_scale)
+            x2 = min(x1+w-1, base_img.shape[1]-1)
+            y2 = min(y1+h-1, base_img.shape[0]-1)
 
-            subimg = np.zeros([h, w])
+            subimg = np.zeros([h, w], dtype='bool')
             for i in range(y1, y2+1):
                 for j in range(x1, x2+1):
-                    subimg[i-y1][j-x1] = int(img2[i][j])
+                    subimg[i-y1][j-x1] = base_img[i][j]
 
-            elem_name = base_name + '-' + elem[n][4] + '.jpg'
-            io.imsave(elem_name, subimg)
+            subimg_name = base_name + '-' + elem[n][4]
+            io.imsave(subimg_name + img_ext, subimg.astype('float64'))
+
+            if elem[n] in cells:
+                subimg = process_cell(np.bitwise_not(subimg))
+                subimg = np.bitwise_not(subimg)
+                io.imsave(subimg_name + '-0' + img_ext, subimg.astype('float64'))
+
 
     # visualización
     fig, (ax1, ax2) = plt.subplots(ncols=2)

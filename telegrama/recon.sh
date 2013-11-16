@@ -1,9 +1,9 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 DATASET=$HOME/hackaton/dataset/telegramas/www.resultados.gob.ar/telegramas
 RESULTS=$DATASET-recon
 
-NFIRST=10
+NFIRST=8000
 
 find $DATASET -name *.pdf | head -$NFIRST > /tmp/pdf_telegramas.txt
 for file in $(cat /tmp/pdf_telegramas.txt)

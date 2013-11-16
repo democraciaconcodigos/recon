@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.55862696"
-     inkscape:cx="707.70372"
-     inkscape:cy="2423.2833"
+     inkscape:zoom="1.1172539"
+     inkscape:cx="1319.3847"
+     inkscape:cy="2354.7835"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -224,5 +224,21 @@
        x="1382.5708"
        y="497.98273"
        inkscape:label="CELDA" />
+    <rect
+       inkscape:label="TABLA"
+       y="-859.98663"
+       x="1060.21"
+       height="241.43948"
+       width="587.61371"
+       id="DATOS_MESA"
+       style="opacity:0.5;fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    <rect
+       style="opacity:0.5;fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="DESTINATARIO"
+       width="533.91058"
+       height="176.10071"
+       x="1113.0181"
+       y="-1119.5516"
+       inkscape:label="TABLA" />
   </g>
 </svg>
