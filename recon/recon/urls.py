@@ -23,5 +23,5 @@ urlpatterns = patterns('',
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', 
     #    {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 
-    (r'^telegrama/', include('tgp.urls')),
+    (r'^', include('tgp.urls')),
 )

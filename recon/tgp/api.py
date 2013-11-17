@@ -9,4 +9,5 @@ from tgp.models import Telegram, Table, Cell
 class TelegramResource(ModelResource):
     class Meta:
         queryset = Telegram.objects.all()
+        resource_name = 'telegrama'
 

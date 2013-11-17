@@ -10,5 +10,5 @@ from tgp.api import TelegramResource
 telegram_resource = TelegramResource()
 
 urlpatterns = patterns('',
-    (r'^api/', include(telegram_resource.urls)),
+    (r'^', include(telegram_resource.urls)),
 )
