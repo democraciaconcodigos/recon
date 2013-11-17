@@ -315,6 +315,42 @@ def process_cell(img):
 
     return np.bitwise_and(mask, img)
 
+## Segmentación de dígitos (computa bounding-boxes)
+#
+# @param img             imagen procesada
+def segment_digits(img):
+
+    # la binariza en caso de que sea escala de grises
+    if not img.dtype == 'bool':
+        img = img > 0
+
+    min_size = 32
+    medfilt_k = 5
+
+    img0 = morphology.remove_small_objects(img, min_size=min_size)
+
+    sum1 = np.sum(img0, 1)
+    sum1 = signal.medfilt(sum1, medfilt_k)
+    bp1 = sum1 > 0
+
+    idx_top = [i for i in range(len(bp1)) if bp1[i]>0]
+    idx_bottom = [len(bp1)-i+1 for i in range(len(bp1)) if bp1[len(bp1)-i-1]>0]
+    if len(idx_top) > 0 and len(idx_bottom) > 0:
+        bp1[idx_top[0]:idx_bottom[0]+1] = True
+
+    sum0 = np.sum(img0, 0)
+    sum0 = signal.medfilt(sum0, medfilt_k)
+    bp0 = sum0 > 0
+
+    idx_01_transition = [i for i in range(1, len(bp0)) if bp0[i-1]==False and bp0[i]==True]
+    idx_10_transition = [i for i in range(len(bp0)-1) if bp0[i]==True and bp0[i+1]==False]
+    bb=[]
+    if len(idx_01_transition)==len(idx_10_transition):
+        for i in range(len(idx_01_transition)):
+            bb.append([idx_01_transition[i], idx_top[0], idx_10_transition[i], idx_bottom[0]])
+
+    return bb
+
 
 # ----------------------------------------------------------------------
 
@@ -480,9 +516,24 @@ def process_telegram(image_file):
             io.imsave(subimg_name + img_ext, subimg.astype('float64'))
 
             if elem[n] in cells:
+                # limpia la celda tratando de dejar solo los números
                 subimg = process_cell(np.bitwise_not(subimg))
+
+                # segmentación de dígitos dentro de la subimagen
+                bounding_boxes = segment_digits(subimg)
+
+                # invierte antes de guardar
                 subimg = np.bitwise_not(subimg)
                 io.imsave(subimg_name + '-0' + img_ext, subimg.astype('float64'))
+
+                for k in range(len(bounding_boxes)):
+                    bb = bounding_boxes[k]
+                    bbh, bbw = bb[3]-bb[1]+1, bb[2]-bb[0]+1
+                    digit = np.zeros([bbh, bbw], dtype='bool')
+                    for i in range(bb[1], bb[3]+1):
+                        for j in range(bb[0], bb[2]+1):
+                            digit[i-bb[1]][j-bb[0]] = subimg[i][j]
+                    io.imsave(subimg_name + '-' + str(k+1) + img_ext, digit.astype('float64'))
 
 
     # visualización
