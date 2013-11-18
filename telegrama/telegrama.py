@@ -15,6 +15,7 @@ def sqdist(p0, p1):
 #
 # @param file           path a la imagen
 def load_image(file):
+    # TODO: forzar escala de grises
 
     # lee la imagen
     img = data.load(file)
@@ -270,48 +271,54 @@ def process_cell(img):
 
     # la binariza en caso de que sea escala de grises
     if not img.dtype == 'bool':
-        img = img > 0
+        img = img > 0  # Binarizar
 
+    # Calcular máscaras para limpiar lineas largas verticales
     h_k = 0.8
-    sum0 = np.sum(img, 0)
+    sum0 = np.sum(img, 0)  # Aplastar la matriz a una fila con las sumas de los valores de cada columna.
     thr0 = sum0 < h_k * img.shape[0]
-    thr0 = thr0.reshape(len(thr0), 1)
+    thr0 = thr0.reshape(len(thr0), 1) # Convertirlo a vector de una dimensión
 
+    # Calcular máscaras para limpiar lineas largas horizontales
     w_k = 0.5
     sum1 = np.sum(img, 1)
     thr1 = sum1 < w_k * img.shape[1]
     thr1 = thr1.reshape(len(thr1), 1)
 
-    mask = thr0.transpose() * thr1
+    mask = thr0.transpose() * thr1 # Generar máscara final para la celda
     mask_lines = mask.copy()
 
     elem = morphology.square(5)
-    mask = morphology.binary_erosion(mask, elem)
+    mask = morphology.binary_erosion(mask, elem) # Eliminar ruido
 
-    img1 = np.bitwise_and(mask, img)
+    img1 = np.bitwise_and(mask, img) # Imagen filtrada
 
     # segmentación del bloque de números
-    kerw = 5
+    kerw = 5  # Kernel width
     thr_k = 0.8
 
+    # Calcular mascara para marcar inicio y fin de región con dígitos horizontalmente
     sum0 = np.sum(img1, 0)
     sum0 = signal.medfilt(sum0, kerw)
     thr0 = sum0 > thr_k * np.median(sum0)
     thr0 = np.bitwise_and(thr0.cumsum() > 0, np.flipud(np.flipud(thr0).cumsum() > 0))
     thr0 = thr0.reshape(len(thr0), 1)
 
+    # Calcular mascara para marcar inicio y fin de región con dígitos verticalmente
     sum1 = np.sum(img1, 1)
     sum1 = signal.medfilt(sum1, kerw)
     thr1 = sum1 > thr_k * np.median(sum1)
     thr1 = np.bitwise_and(thr1.cumsum() > 0, np.flipud(np.flipud(thr1).cumsum() > 0))
     thr1 = thr1.reshape(len(thr1), 1)
 
+    # Mascara final para inicio y fin de caracteres (bounding box of digit region)
     mask = thr0.transpose() * thr1
     mask = morphology.binary_dilation(mask, morphology.square(2))
 
-    img = np.bitwise_and(mask_lines.astype(img.dtype), img)
-    img = morphology.binary_dilation(img, morphology.disk(1))
-    img = morphology.binary_erosion(img, morphology.disk(1))
+
+    img = np.bitwise_and(mask_lines.astype(img.dtype), img)  # Aplicar máscara para quitar lineas
+    img = morphology.binary_dilation(img, morphology.disk(1)) # Dilatación para unir números quebrados por la máscara anterior
+    img = morphology.binary_erosion(img, morphology.disk(1)) # Volver a la fomorma 'original' con los bordes unidos
 
     return np.bitwise_and(mask, img)
 
@@ -330,9 +337,10 @@ def segment_digits(img):
     img0 = morphology.remove_small_objects(img, min_size=min_size)
 
     sum1 = np.sum(img0, 1)
-    sum1 = signal.medfilt(sum1, medfilt_k)
+    sum1 = signal.medfilt(sum1, medfilt_k) # Suavizado del perfil acumulado
     bp1 = sum1 > 0
 
+    # Obtener coordenada en y de los puntos inicio y fin de los dígitos (asumiendo una sola línea de dígitos)
     idx_top = [i for i in range(len(bp1)) if bp1[i]>0]
     idx_bottom = [len(bp1)-i+1 for i in range(len(bp1)) if bp1[len(bp1)-i-1]>0]
     if len(idx_top) > 0 and len(idx_bottom) > 0:
@@ -342,6 +350,7 @@ def segment_digits(img):
     sum0 = signal.medfilt(sum0, medfilt_k)
     bp0 = sum0 > 0
 
+    # Obtener coordenada en x de los puntos inicio y fin de los dígitos
     idx_01_transition = [i for i in range(1, len(bp0)) if bp0[i-1]==False and bp0[i]==True]
     idx_10_transition = [i for i in range(len(bp0)-1) if bp0[i]==True and bp0[i+1]==False]
     bb=[]
