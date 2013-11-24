@@ -11,3 +11,9 @@ class TelegramResource(ModelResource):
         queryset = Telegram.objects.all()
         resource_name = 'telegrama'
 
+
+class TableResource(ModelResource):
+    class Meta:
+        queryset = Table.objects.all()
+        resource_name = 'table'
+
