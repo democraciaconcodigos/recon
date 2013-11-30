@@ -10,37 +10,32 @@ class Telegram(models.Model):
     circuit = models.CharField(max_length=10)
     table = models.CharField(max_length=10)
     province = models.CharField(max_length=15, default="Córdoba")
-    pdf = models.FileField(upload_to=UPLOAD_TO) #TODO: definir bien upload_to
-    image = models.ImageField(upload_to=UPLOAD_TO, null=True, blank=True) #TODO: definir bien upload_to
-    tables = models.ForeignKey("Table")
+    pdf = models.FileField(upload_to=UPLOAD_TO)
+    image = models.ImageField(upload_to=UPLOAD_TO, null=True, blank=True)
 
     unique_together = ("section", "circuit", "table")
     
-    # @classmethod
-    # def cells(self):
-    # 	return Cells.objects.filter()
-
     def get_image_url(self):
-    	pass
-
-	def __unicode__(self):
-		return self.id
+        pass
+    
+    def __unicode__(self):
+        return "Telegrama (%s, %s, %s)" % (self.section, self.circuit, self.table)
 
 
 class Table(models.Model):
-	name = models.CharField(max_length=50)
-	cells = models.ForeignKey("Cell")
-
-	def __unicode__(self):
-		return self.name
+    name = models.CharField(max_length=50)
+    telegram = models.ForeignKey("Telegram", related_name="tables")
+    
+    def __unicode__(self):
+        return "%s del %s" %(self.name, self.telegram)
 
 
 class Cell(models.Model):
     position = models.CharField(max_length=10)
-    name = models.CharField(max_length=50, null=True, blank=True)
     image = models.ImageField(upload_to=UPLOAD_TO)
-    data = models.CharField(max_length=50)
-    score = models.DecimalField(max_digits=4, decimal_places=3)
+    data = models.CharField(max_length=50, null=True, blank=True)
+    score = models.DecimalField(max_digits=4, decimal_places=3, null=True, blank=True)
+    table = models.ForeignKey("Table", related_name="cells")
 
     def __unicode__(self):
-        return self.name if self.name else self.position
+        return "Celda %s de tabla %s" % (self.position, self.table)
