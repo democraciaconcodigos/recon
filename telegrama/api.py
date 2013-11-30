@@ -4,7 +4,7 @@
 """
 from django.conf.urls import patterns, include, url
 from tastypie.resources import ModelResource
-from tgp.models import Telegram, Table, Cell
+from models import Telegram, Table, Cell
 
 """Seccion / circuito / mesa
 """

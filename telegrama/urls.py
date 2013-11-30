@@ -5,7 +5,7 @@
 from django.conf.urls import patterns, include, url
 
 from tastypie.api import Api
-from tgp.api import TelegramResource
+from api import TelegramResource
 
 telegram_resource = TelegramResource()
 
