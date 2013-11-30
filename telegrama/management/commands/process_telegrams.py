@@ -1,14 +1,14 @@
 #coding=utf-8
 from django.core.management.base import BaseCommand, CommandError
-from telegrama.models import Telegram, Cell  # , Table
+
+from ...models import Telegram, Cell  # , Table
 
 
 def parse_spot_from_telegram():
     """ Returns a tuple (parsed_data, parsed_score) being those the data read
         from the OCR and the credibility score (a value between 0 and 1)
     """
-    # llama a digit.algo y procesa
-    # pseudocode!!!
+    # llama a digit.algo
     return True
 
 
@@ -21,9 +21,8 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        # pseudocode, pseudocode everywhere!!!
 
-        # get telegrams to process
+        # initially all telegrams will be processed
         teleg_tables = Telegram.objects.all()
 
         # las coordenadas desde donde sacar los datos?
@@ -33,10 +32,8 @@ class Command(BaseCommand):
         data_spots = 'dummy_string_assignation_to_change!!!'
 
         if args:
-            # armar lista de IDs
-            id_list = args.to_list()  # FIXME!!!!!
-
-            # agarrar ese|esos telegrama(s)
+            id_list = args
+            # just requested telegrams
             teleg_tables = teleg_tables.filter(id__in=id_list)
 
         for tt in teleg_tables:
