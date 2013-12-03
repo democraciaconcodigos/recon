@@ -56,8 +56,6 @@ import os
 CURRENT_PATH = os.path.abspath(os.path.dirname(__file__).decode('utf-8'))
 MEDIA_ROOT = os.path.join(CURRENT_PATH, 'media') #.replace('\\','/')
 MEDIA_URL = '/site_media/'
-#MEDIA_ROOT
-TELEGRAMA_MEDIA_ROOT = 'media/telegramas'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
