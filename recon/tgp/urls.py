@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^telegrama/(\d{3})/$', 'tgp.views.telegram_detail'),
     url(r'^telegrama/(\d{3})/(\d{4})/$', 'tgp.views.telegram_detail'),
     url(r'^telegrama/(\d{3})/(\d{4})/(\d{4})/$', 'tgp.views.telegram_detail'),
+    url(r'^telegrama/(\d{3})/(\d{4})/(\d{4})/(\w+)/(\w+)/$', 'tgp.views.telegram_cell'),
 )
 
 

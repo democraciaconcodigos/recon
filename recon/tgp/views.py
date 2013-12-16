@@ -40,4 +40,15 @@ def telegram_detail(request, section, circuit=None, table=None):
     #jsondata = telegram  # simplejson.dump
     return HttpResponse(jsondata, mimetype='application/json')
 
+def telegram_cell(request, section, circuit, table, tables, cell):
+    """Segun el descripor unico seccion-circuito-mesa nombre de tabla y coordenadas obtener la celda 
+    correspondiente serializado a json.
+    """
+    telegrams = Telegram.objects.filter(section=section, circuit=circuit, table=table)
+    telegrams = telegrams.filter(tables__name=tables, tables__cells__position=cell)
+    jsondata = serializers.serialize('json', telegrams)
+
+    return HttpResponse(jsondata, mimetype='application/json')
+
+
 
