@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.core import serializers
-from django.utils import simplejson
+#from django.utils import simplejson
 
 from models import Telegram
 
@@ -24,11 +24,16 @@ def parse_cell(telegram_id, cell_id):
 	El orden de precisión es descendente, osea, el primer valor es el mas probable
 	"""
 
-def telegram_detail(request, section, circuit, table):
+def telegram_detail(request, section, circuit=None, table=None):
     """Segun el descripor unico seccion-circuito-mesa obtener el telegrama 
     correspondiente serializado a json.
+    Si falta table o table y circuit devuelve los listados correspondientes.
     """
-    telegrams = Telegram.objects.filter(section=section, circuit=circuit, table=table)
+    telegrams = Telegram.objects.filter(section=section)
+    if circuit:
+        telegrams = telegrams.filter(circuit=circuit)
+    if table:
+        telegrams = telegrams.filter(table=table)
     jsondata = serializers.serialize('json', telegrams)
 
     #telegram = Telegram.objects.get(section=section, circuit=circuit, table=table)

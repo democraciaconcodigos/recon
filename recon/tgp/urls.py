@@ -11,6 +11,8 @@ from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
 #    (r'^', include(telegram_resource.urls)),
+    url(r'^telegrama/(\d{3})/$', 'tgp.views.telegram_detail'),
+    url(r'^telegrama/(\d{3})/(\d{4})/$', 'tgp.views.telegram_detail'),
     url(r'^telegrama/(\d{3})/(\d{4})/(\d{4})/$', 'tgp.views.telegram_detail'),
 )
 
