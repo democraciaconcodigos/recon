@@ -36,8 +36,6 @@ def telegram_detail(request, section, circuit=None, table=None):
         telegrams = telegrams.filter(table=table)
     jsondata = serializers.serialize('json', telegrams)
 
-    #telegram = Telegram.objects.get(section=section, circuit=circuit, table=table)
-    #jsondata = telegram  # simplejson.dump
     return HttpResponse(jsondata, mimetype='application/json')
 
 def telegram_cell(request, section, circuit, table, tables, cell):

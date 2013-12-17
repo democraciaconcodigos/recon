@@ -23,6 +23,20 @@ Armar el entorno:
 Como Trabajar
 =============
 
+Obtener los últimos cambios:
+
+> git pull
+
+> pip install -r requirements.txt
+
+> python manage.py migrate
+
+Si la migracion se queja por tablas ya creadas, por ejemplo, para el modulo tgp, usar
+
+> python manage.py migrate tgp --fake 
+ 
+
+
 Branchear desde master:
 
 > git checkout -b nombre_de_branch
