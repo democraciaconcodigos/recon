@@ -26,5 +26,5 @@ class TelegramResource(ModelResource):
 #class TableResource(ModelResource):
 #    class Meta:
 #        queryset = Table.objects.all()
-        #resource_name = 'table'
+        #resource_name = 'table' #mesa
 

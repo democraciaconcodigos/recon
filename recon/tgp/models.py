@@ -6,15 +6,16 @@ from django.db import models
 UPLOAD_TO = settings.TELEGRAMA_MEDIA_ROOT
 
 class Telegram(models.Model):
+    district = models.CharField(max_length=10) # 2 digits
     section = models.CharField(max_length=10) # 3 digits
     circuit = models.CharField(max_length=10) # 4 digits
-    table = models.CharField(max_length=10) # 4 digits , let's call it "mesa" the next time
-    province = models.CharField(max_length=15, default="Córdoba") # distrito?
+    mesa = models.CharField(max_length=10) # 4 digits
+    province = models.CharField(max_length=15, default="Córdoba")
     pdf = models.FileField(upload_to=UPLOAD_TO) #TODO: definir bien upload_to
     image = models.ImageField(upload_to=UPLOAD_TO, null=True, blank=True) #TODO: definir bien upload_to
     tables = models.ForeignKey("Table")
 
-    unique_together = ("section", "circuit", "table")
+    unique_together = ("district", "section", "circuit", "mesa")
     
     # @classmethod
     # def cells(self):
@@ -27,7 +28,7 @@ class Telegram(models.Model):
 		return self.id
 
     def get_numeric_identifier(self):
-        return "%s%s%s" % (self.section, self.circuit, self.table)
+        return "%s%s%s%s" % (self.district, self.section, self.circuit, self.mesa)
 
 
 class Table(models.Model):
