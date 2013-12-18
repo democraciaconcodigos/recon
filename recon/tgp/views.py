@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.core import serializers
-#from django.utils import simplejson
+from django.utils import simplejson
 
 from models import Telegram
 
@@ -34,9 +34,12 @@ def telegram_detail(request, section, circuit=None, mesa=None):
         telegrams = telegrams.filter(circuit=circuit)
     if mesa:
         telegrams = telegrams.filter(mesa=mesa)
-    jsondata = serializers.serialize('json', telegrams)
 
+    telegrams = list(telegrams.values('id', 'district', 'section', 'circuit', 'mesa', 'province', 'pdf', 'image'))
+    jsondata = simplejson.dumps(telegrams)
+    #jsondata = serializers.serialize('json', telegrams)
     return HttpResponse(jsondata, mimetype='application/json')
+
 
 def telegram_cell(request, section, circuit, mesa, tables, cell):
     """Segun el descripor unico seccion-circuito-mesa nombre de tabla y coordenadas obtener la celda 

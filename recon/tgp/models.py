@@ -6,7 +6,7 @@ from django.db import models
 UPLOAD_TO = settings.TELEGRAMA_MEDIA_ROOT
 
 class Telegram(models.Model):
-    district = models.CharField(max_length=10) # 2 digits
+    district = models.CharField(max_length=10, default='02') # 2 digits
     section = models.CharField(max_length=10) # 3 digits
     circuit = models.CharField(max_length=10) # 4 digits
     mesa = models.CharField(max_length=10) # 4 digits
